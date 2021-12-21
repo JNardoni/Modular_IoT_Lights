@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="50dp"
+    android:height="50dp"
+    android:viewportHeight="50"
+    android:viewportWidth="50">
+    <group android:name="addGroup">
+        <path
+            android:name="triangle_outline"
+            android:fillColor="#979392"
+            android:pathData="m 25,5 l 22,38 -44,0 z" />
+
+        <path
+            android:name="line_up"
+            android:fillColor="#000000"
+            android:pathData="M 1,21 H 26 V 40 H 24 V 21 Z" />
+        <path
+            android:name="line_up"
+            android:fillColor="#000000"
+            android:pathData="M 1,30 H 34 V 32 H 16 V 30 Z" />
+
+    </group>
+</vector>
