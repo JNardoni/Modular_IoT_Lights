@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tri_0_1" type = "id"/>
+    <item name="tri_1_0" type = "id"/>
+    <item name="tri_0_n1" type = "id"/>
+    <item name="tri_n1_0" type = "id"/>
+
+
+</resources>
