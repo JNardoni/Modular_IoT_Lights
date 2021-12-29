@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:scrollbars="vertical"
-    android:id="@+id/add_panels">
+    android:id="@+id/panel_layout">
 
         <ImageView
             android:id="@+id/tri_0_0"
@@ -12,14 +12,77 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="100dp"
             android:layout_marginEnd="100dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginBottom="100dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginBottom="180dp"
             android:src="@drawable/triangle_add"
             android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/tri_1_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:src="@drawable/triangle_add"
+            android:rotation="180"
+            app:layout_constraintStart_toStartOf="@+id/tri_0_0"
+            app:layout_constraintBottom_toBottomOf="@+id/tri_0_0">
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/tri_2_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="5dp"
+            android:clickable="true"
+            android:src="@drawable/triangle_add"
+            app:layout_constraintStart_toStartOf="@+id/tri_1_0"
+            app:layout_constraintTop_toTopOf="@+id/tri_1_0">
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/tri_3_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:src="@drawable/triangle_add"
+            android:rotation="180"
+            app:layout_constraintStart_toStartOf="@+id/tri_2_0"
+            app:layout_constraintBottom_toBottomOf="@+id/tri_2_0">
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/tri_4_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="5dp"
+            android:clickable="true"
+            android:src="@drawable/triangle_add"
+            app:layout_constraintStart_toStartOf="@+id/tri_3_0"
+            app:layout_constraintTop_toTopOf="@+id/tri_3_0">
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/tri_5_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="true"
+            android:src="@drawable/triangle_add"
+            android:rotation="180"
+            app:layout_constraintStart_toStartOf="@+id/tri_4_0"
+            app:layout_constraintBottom_toBottomOf="@+id/tri_4_0">
         </ImageView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

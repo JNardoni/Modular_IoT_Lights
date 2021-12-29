@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 
@@ -14,7 +15,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 public class panel_setup extends Activity {
 
     ImageView imageview;
-    ConstraintLayout constraintlayout;
+    ConstraintLayout parentLayout;
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -22,7 +23,7 @@ public class panel_setup extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.panel_layout);
 
-        constraintlayout = findViewById(R.id.add_panels);
+      //  parentLayout = findViewById(R.id.panel_layout);
 
 
         findViewById(R.id.tri_0_0).setOnClickListener(new View.OnClickListener() {
@@ -31,18 +32,16 @@ public class panel_setup extends Activity {
                 imageview = findViewById(R.id.tri_0_0);
                 imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
 
-                addNearby(0,0);
+                addNearby(0,0, view);
 
             }
         });
 
     }
 
-    public void addNearby(int x, int y) {
+    public void addNearby(int x, int y, View view) {
 
-        ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(140,140);
-
-
+        ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(200,200);
 
         params.leftMargin = 100;
         params.rightMargin = 10;
@@ -50,36 +49,49 @@ public class panel_setup extends Activity {
         params.bottomMargin = 10;
 
 
+        ImageView newTri= new ImageView(this);
+        newTri.setId(R.id.tri_n1_0);
 
+        newTri.setImageDrawable(getResources().getDrawable(R.drawable.triangle_add));
 
-        imageview = new ImageView(this);
-        imageview.setId(R.id.tri_1_0);
+        if((x+y) % 2 == 0 )  newTri.setRotation(180);
 
-        imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle_add));
-
-
-        imageview.setOnClickListener(new View.OnClickListener() {
+        newTri.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
-
-             ConstraintSet constraints = new ConstraintSet();
-             ConstraintLayout layoutt;
-             layoutt= (ConstraintLayout) findViewById(R.id.tri_1_0);
-
-             constraints.constrainWidth(imageview.getId(), ConstraintSet.WRAP_CONTENT);
-             constraints.constrainHeight(imageview.getId(), ConstraintSet.WRAP_CONTENT);
-             constraints.center(imageview.getId(), ConstraintSet.PARENT_ID, ConstraintSet.LEFT,
-                     0, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0, 0.5f);
-             constraints.center(imageview.getId(), ConstraintSet.PARENT_ID, ConstraintSet.TOP,
-                     0, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0, 0.5f);
-
-             constraints.applyTo(layoutt);
+            int i = 1;
           }
         });
-        imageview.setLayoutParams(params);
-        constraintlayout.addView(imageview);
+        parentLayout = (ConstraintLayout) findViewById(R.id.panel_layout);
+
+        parentLayout.addView(newTri);
+        //newTri.setLayoutParams(params);
+
+        //Constraints
 
 
+        ConstraintSet constraints = new ConstraintSet();
+        constraints.clone(parentLayout);
+        //parentLayout.addView(newTri);
+
+/*
+        constraints.constrainWidth(imageview.getId(), ConstraintSet.WRAP_CONTENT);
+        constraints.constrainHeight(imageview.getId(), ConstraintSet.WRAP_CONTENT);
+        constraints.center(imageview.getId(), ConstraintSet.PARENT_ID, ConstraintSet.LEFT,
+                0, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0, 0.5f);
+        constraints.center(imageview.getId(), ConstraintSet.PARENT_ID, ConstraintSet.TOP,
+                0, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0, 0.5f);
+
+*/
+
+       constraints.connect(newTri.getId(), ConstraintSet.BOTTOM, R.id.tri_0_0, ConstraintSet.BOTTOM, 10);
+       constraints.connect(newTri.getId(), ConstraintSet.RIGHT, R.id.tri_0_0, ConstraintSet.RIGHT, 100);
+       //constraints.connect(newTri.getId(), ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 10);
+       constraints.constrainHeight(newTri.getId(), 200);
+       // constraints.connect(newTri.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, R.id.tri_0_0, -10);
+
+
+        constraints.applyTo(parentLayout);
 
     }
 
