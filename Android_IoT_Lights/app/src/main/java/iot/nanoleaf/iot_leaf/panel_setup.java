@@ -19,7 +19,7 @@ public class panel_setup extends Activity {
     ConstraintLayout parentLayout;
 
     static int X_MAX = 13;
-    static int Y_MAX = 15;
+    static int Y_MAX = 17;
 
     //Keeps the stored coordianates of panel. This is used to
     //1. Ensure that the panel is not created twice in the layout
@@ -35,19 +35,30 @@ public class panel_setup extends Activity {
         setContentView(R.layout.panel_layout);
       //  parentLayout = findViewById(R.id.panel_layout);
 
+        //Matrix array holds 2 if active, 1 if being displayed but not active
+        coordinate_array[(X_MAX-1)/2][(Y_MAX-1)/2] = 1; //Prememptively set to 1, but will change to 2 onlick
+
         //Sets the The initial, centered triangle. Will be the only one there when no other panels are defined
         //Set to be the halfway point for both x/y dimensions
         findViewById(R.id.tri_0_0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 imageview = findViewById(R.id.tri_0_0);
-                imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
+
+                if (coordinate_array[(X_MAX-1)/2][(Y_MAX-1)/2] == 1) {
+                    imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
+                    coordinate_array[(X_MAX-1)/2][(Y_MAX-1)/2] = 2;
+                }
+                else {
+                    imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle_add));
+                    coordinate_array[(X_MAX-1)/2][(Y_MAX-1)/2] = 1;
+                }
 
                 checkNearby((X_MAX-1)/2,(Y_MAX-1)/2, view);
 
             }
         });
-        coordinate_array[(X_MAX-1)/2][(Y_MAX-1)/2] = 1;
+
     }
 
 
@@ -109,7 +120,16 @@ public class panel_setup extends Activity {
              checkNearby(x, y, view);
 
              imageview = findViewById(view.getId());
-             imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
+
+             if (coordinate_array[x][y] == 1) {
+                 imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
+                 coordinate_array[x][y] = 2;
+             }
+             else {
+                 imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle_add));
+                 coordinate_array[x][y] = 1;
+             }
+             //imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
 
           }
         });
@@ -127,29 +147,25 @@ public class panel_setup extends Activity {
         constraints.constrainHeight(newTri.getId(), 200);
 
         if (position == 3) { //Constraints if the new panel is to the left of its parent
-            constraints.connect(newTri.getId(), ConstraintSet.BOTTOM, parentView.getId(), ConstraintSet.BOTTOM, 20);
-            constraints.connect(newTri.getId(), ConstraintSet.RIGHT, parentView.getId(), ConstraintSet.RIGHT, 100);
+            constraints.connect(newTri.getId(), ConstraintSet.BOTTOM, parentView.getId(), ConstraintSet.BOTTOM, 0);
+            constraints.connect(newTri.getId(), ConstraintSet.RIGHT, parentView.getId(), ConstraintSet.RIGHT, 160);
         }
 
         if (position == 1) {  //Constraints if to the right of its parent
-            constraints.connect(newTri.getId(), ConstraintSet.BOTTOM, parentView.getId(), ConstraintSet.BOTTOM, 20);
-            constraints.connect(newTri.getId(), ConstraintSet.LEFT, parentView.getId(), ConstraintSet.LEFT, 100);
-
-
+            constraints.connect(newTri.getId(), ConstraintSet.BOTTOM, parentView.getId(), ConstraintSet.BOTTOM, 0);
+            constraints.connect(newTri.getId(), ConstraintSet.LEFT, parentView.getId(), ConstraintSet.LEFT, 160);
         }
 
+        //A bit funky. Appears far above the other triangle
         if (position == 0) {  //Constraints if above its parent
-
             constraints.connect(newTri.getId(), ConstraintSet.BOTTOM, parentView.getId(), ConstraintSet.TOP, 0);
             constraints.connect(newTri.getId(), ConstraintSet.RIGHT, parentView.getId(), ConstraintSet.RIGHT, 0);
            // constraints.constrainHeight(parentView.getId(), 200);
         }
 
         if (position == 2) {  //Constraints if below its parent
-
-            constraints.connect(newTri.getId(), ConstraintSet.TOP, parentView.getId(), ConstraintSet.TOP, 165);
+            constraints.connect(newTri.getId(), ConstraintSet.TOP, parentView.getId(), ConstraintSet.TOP, 200);
             constraints.connect(newTri.getId(), ConstraintSet.RIGHT, parentView.getId(), ConstraintSet.RIGHT, 0);
-
         }
 
         constraints.applyTo(parentLayout);
