@@ -4,6 +4,9 @@
     android:height="50dp"
     android:viewportHeight="50"
     android:viewportWidth="50">
-
+    <path
+        android:name="triangle_outline"
+        android:fillColor="#000000"
+        android:pathData="m 0,0 0 0,0 0,0 z" />
 
 </vector>

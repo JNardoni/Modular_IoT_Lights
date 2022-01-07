@@ -24,43 +24,21 @@ public class panel_setup extends Activity {
     //Keeps the stored coordianates of panel. This is used to
     //1. Ensure that the panel is not created twice in the layout
     //2. Ensure that, when ready, the full known layout is passed to the android app
-    //Auto to 0, set to 1 when in use
+    //Auto to 0 which means not added to layout, set to 1 when in layout but not added to the list of
+    //panels, set to 2 when added to list of panels
     int [] [] coordinate_array = new int[X_MAX][Y_MAX];
-
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.panel_layout);
-      //  parentLayout = findViewById(R.id.panel_layout);
+        parentLayout = (ConstraintLayout) findViewById(R.id.panel_layout);
 
-        //Matrix array holds 2 if active, 1 if being displayed but not active
-        coordinate_array[(X_MAX-1)/2][(Y_MAX-1)/2] = 1; //Prememptively set to 1, but will change to 2 onlick
-
-        //Sets the The initial, centered triangle. Will be the only one there when no other panels are defined
-        //Set to be the halfway point for both x/y dimensions
-        findViewById(R.id.tri_0_0).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                imageview = findViewById(R.id.tri_0_0);
-
-                if (coordinate_array[(X_MAX-1)/2][(Y_MAX-1)/2] == 1) {
-                    imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
-                    coordinate_array[(X_MAX-1)/2][(Y_MAX-1)/2] = 2;
-                }
-                else {
-                    imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle_add));
-                    coordinate_array[(X_MAX-1)/2][(Y_MAX-1)/2] = 1;
-                }
-
-                checkNearby((X_MAX-1)/2,(Y_MAX-1)/2, view);
-
-            }
-        });
-
+       // Starts by defining the very center triangle. Its already added in the layout xml, but this helps set
+       //the constraints
+        addNearby((X_MAX-1)/2,(Y_MAX-1)/2,0);
     }
-
 
     //Adds bordering triangles to the panel. Allows the structure to continue to expand, without
     //bogging the system down with unneeded triangles
@@ -70,7 +48,7 @@ public class panel_setup extends Activity {
     //2. Not already be created for the coordinate array.
     //3. Be bordering a side of the triangle. A triangle with the base on the bottom and point on top would
     //  not have one added above it, for example
-    public void addNearby(final int x, final int y, int position, View parentView) {
+    public void addNearby(final int x, final int y, int position) {
 
         //1. In bounds
         if(x < 0 || x >= X_MAX) {
@@ -87,15 +65,12 @@ public class panel_setup extends Activity {
         //3. Properly bordering
         //Checks if its above and odd. The coordinate grid makes every "even" (x+y) triangle is pointed up, meaning it wouldnt have a direct
         //triangle above it. Since this is checking the triangle thats being placed, it checks if its odd and above instead
-        if (position == 0 && (x + y) % 2 != 0) {
-            return;
-        }
+        if (position == 0 && (x + y) % 2 != 0) return;
+        
         //Same with odd triangles, except it chekcs below
-        if (position == 2 && (x + y) % 2 == 0) {
-            return;
-        }
-        coordinate_array[x][y] = 1; //ensures it cant be placed again
+        if (position == 2 && (x + y) % 2 == 0) return;
 
+        coordinate_array[x][y] = 1; //ensures it cant be placed again
 
         //First defines the parameters for the triangles. Ensures theyre all the same size
         ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(200,200);
@@ -117,7 +92,7 @@ public class panel_setup extends Activity {
          @Override
          public void onClick(View view) {
 
-             checkNearby(x, y, view);
+             checkNearby(x, y);
 
              imageview = findViewById(view.getId());
 
@@ -129,47 +104,22 @@ public class panel_setup extends Activity {
                  imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle_add));
                  coordinate_array[x][y] = 1;
              }
-             //imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
-
           }
         });
         parentLayout = (ConstraintLayout) findViewById(R.id.panel_layout);
 
         parentLayout.addView(newTri);
 
-
         //Constraints
-
-
         ConstraintSet constraints = new ConstraintSet();
         constraints.clone(parentLayout);
 
         constraints.constrainHeight(newTri.getId(), 200);
 
-        if (position == 3) { //Constraints if the new panel is to the left of its parent
-            constraints.connect(newTri.getId(), ConstraintSet.BOTTOM, parentView.getId(), ConstraintSet.BOTTOM, 0);
-            constraints.connect(newTri.getId(), ConstraintSet.RIGHT, parentView.getId(), ConstraintSet.RIGHT, 160);
-        }
-
-        if (position == 1) {  //Constraints if to the right of its parent
-            constraints.connect(newTri.getId(), ConstraintSet.BOTTOM, parentView.getId(), ConstraintSet.BOTTOM, 0);
-            constraints.connect(newTri.getId(), ConstraintSet.LEFT, parentView.getId(), ConstraintSet.LEFT, 160);
-        }
-
-        //A bit funky. Appears far above the other triangle
-        if (position == 0) {  //Constraints if above its parent
-            constraints.connect(newTri.getId(), ConstraintSet.BOTTOM, parentView.getId(), ConstraintSet.TOP, 0);
-            constraints.connect(newTri.getId(), ConstraintSet.RIGHT, parentView.getId(), ConstraintSet.RIGHT, 0);
-           // constraints.constrainHeight(parentView.getId(), 200);
-        }
-
-        if (position == 2) {  //Constraints if below its parent
-            constraints.connect(newTri.getId(), ConstraintSet.TOP, parentView.getId(), ConstraintSet.TOP, 200);
-            constraints.connect(newTri.getId(), ConstraintSet.RIGHT, parentView.getId(), ConstraintSet.RIGHT, 0);
-        }
+        constraints.connect(newTri.getId(), ConstraintSet.TOP, R.id.centerpoint, ConstraintSet.TOP, 165*y);
+        constraints.connect(newTri.getId(), ConstraintSet.LEFT, R.id.centerpoint, ConstraintSet.LEFT, 102*x);
 
         constraints.applyTo(parentLayout);
-
     }
 
     //Cycles through the 4 potential sides, determining which ones need to have a new empty imageview added.
@@ -180,12 +130,12 @@ public class panel_setup extends Activity {
     //  not have one added above it, for example
     //Sieds: 0 top, 1 right, 2 bot, 3 left.
     //If all is ok, passes the NEW PANEL to addNearby
-    public void checkNearby(int x, int y, View view) {
+    public void checkNearby(int x, int y) {
 
-        addNearby(x-1,y, 3, view); //Checks to the left
-        addNearby(x+1,y, 1, view); //Checks to right
-        addNearby(x,y-1, 2, view); //Bot
-        addNearby(x,y+1, 0, view); //Top. Only max of one top/bot can place
+        addNearby(x-1,y, 3); //Checks to the left
+        addNearby(x+1,y, 1); //Checks to right
+        addNearby(x,y+1, 2); //Bot
+        addNearby(x,y-1, 0); //Top. Only max of one top/bot can place
     }
 
 }

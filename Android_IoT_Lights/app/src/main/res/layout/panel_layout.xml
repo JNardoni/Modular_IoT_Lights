@@ -1,27 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:scrollbars="vertical"
     android:id="@+id/panel_layout">
 
+        <!-- A center point that all nearby triangles are based around -->
+        <ImageView
+            android:id="@+id/centerpoint"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="10dp"
+            android:clickable="false"
+            android:src="@drawable/triangle_add"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </ImageView>
+
+        <!-- A center triangle.
+         The initial triangle is used to create all other triangles -->
         <ImageView
             android:id="@+id/tri_0_0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="100dp"
             android:layout_marginEnd="100dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="180dp"
             android:src="@drawable/triangle_add"
             android:clickable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintBottom_toBottomOf="@id/centerpoint"
+            app:layout_constraintStart_toStartOf="@id/centerpoint">
         </ImageView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
