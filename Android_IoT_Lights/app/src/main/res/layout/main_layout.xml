@@ -9,7 +9,7 @@
 
         <!-- A center point that all nearby triangles are based around -->
         <ImageView
-            android:id="@+id/centerpoint"
+            android:id="@+id/centerpoint_main"
             android:layout_width="1dp"
             android:layout_height="1dp"
             android:layout_marginStart="1dp"
@@ -20,22 +20,17 @@
             app:layout_constraintTop_toTopOf="parent">
         </ImageView>
 
-
         <Button
-            android:id="@+id/btn_confirm"
+            android:id="@+id/btn_main_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="150dp"
             android:layout_marginEnd="80dp"
             android:layout_marginBottom="45dp"
-            android:text="@string/btn_confirm_layout"
+            android:text="@string/btn_new_layout"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 

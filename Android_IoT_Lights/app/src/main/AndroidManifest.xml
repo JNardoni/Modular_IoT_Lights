@@ -8,12 +8,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
-        <activity android:name = ".panel_setup"
+        <activity android:name = ".main_panels"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name = "android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".panel_setup"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         </activity>
     </application>
 

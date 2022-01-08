@@ -2,6 +2,7 @@ package iot.nanoleaf.iot_leaf;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -17,9 +18,10 @@ public class panel_setup extends Activity {
 
     ImageView imageview;
     ConstraintLayout parentLayout;
+    Button btnConfirm;
 
-    static int X_MAX = 13;
-    static int Y_MAX = 17;
+    static int X_MAX = 11;
+    static int Y_MAX = 11;
 
     //Keeps the stored coordianates of panel. This is used to
     //1. Ensure that the panel is not created twice in the layout
@@ -35,9 +37,24 @@ public class panel_setup extends Activity {
         setContentView(R.layout.panel_layout);
         parentLayout = (ConstraintLayout) findViewById(R.id.panel_layout);
 
-       // Starts by defining the very center triangle. Its already added in the layout xml, but this helps set
-       //the constraints
-        addNearby((X_MAX-1)/2,(Y_MAX-1)/2,0);
+        // Starts by defining the very center triangle. Its already added in the layout xml, but this helps set
+        //the constraints
+        addNearby((X_MAX - 1) / 2, (Y_MAX - 1) / 2, 0);
+
+        btnConfirm = findViewById(R.id.btn_confirm);
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("int", 1);
+
+                Bundle mBundle = new Bundle();
+                mBundle.putSerializable("matrix", coordinate_array);
+                returnIntent.putExtras(mBundle);
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }
+        });
     }
 
     //Adds bordering triangles to the panel. Allows the structure to continue to expand, without
@@ -66,7 +83,7 @@ public class panel_setup extends Activity {
         //Checks if its above and odd. The coordinate grid makes every "even" (x+y) triangle is pointed up, meaning it wouldnt have a direct
         //triangle above it. Since this is checking the triangle thats being placed, it checks if its odd and above instead
         if (position == 0 && (x + y) % 2 != 0) return;
-        
+
         //Same with odd triangles, except it chekcs below
         if (position == 2 && (x + y) % 2 == 0) return;
 
@@ -114,10 +131,10 @@ public class panel_setup extends Activity {
         ConstraintSet constraints = new ConstraintSet();
         constraints.clone(parentLayout);
 
-        constraints.constrainHeight(newTri.getId(), 200);
+        constraints.constrainHeight(newTri.getId(), 190);
 
-        constraints.connect(newTri.getId(), ConstraintSet.TOP, R.id.centerpoint, ConstraintSet.TOP, 165*y);
-        constraints.connect(newTri.getId(), ConstraintSet.LEFT, R.id.centerpoint, ConstraintSet.LEFT, 102*x);
+        constraints.connect(newTri.getId(), ConstraintSet.TOP, R.id.centerpoint, ConstraintSet.TOP, 210*y);
+        constraints.connect(newTri.getId(), ConstraintSet.LEFT, R.id.centerpoint, ConstraintSet.LEFT, 121*x);
 
         constraints.applyTo(parentLayout);
     }

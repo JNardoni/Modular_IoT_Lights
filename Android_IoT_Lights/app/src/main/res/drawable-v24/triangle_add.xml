@@ -8,16 +8,16 @@
         <path
             android:name="triangle_outline"
             android:fillColor="#979392"
-            android:pathData="m 25,5 l 22,38 -44,0 z" />
+            android:pathData="m 25,2 l 25,48 -50,0 z" />
 
         <path
             android:name="line_up"
             android:fillColor="#000000"
-            android:pathData="M 1,21 H 26 V 40 H 24 V 21 Z" />
+            android:pathData="M 1,23 H 26 V 41 H 24 V 23Z" />
         <path
             android:name="line_up"
             android:fillColor="#000000"
-            android:pathData="M 1,30 H 34 V 32 H 16 V 30 Z" />
+            android:pathData="M 1,31 H 34 V 33 H 16 V 31 Z" />
 
     </group>
 </vector>
