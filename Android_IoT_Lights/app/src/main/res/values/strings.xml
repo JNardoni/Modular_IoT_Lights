@@ -2,4 +2,5 @@
     <string name="app_name">IoT_Leaf</string>
     <string name="btn_confirm_layout">Accept New Layout</string>
     <string name="btn_new_layout">Choose New Layout</string>
+
 </resources>

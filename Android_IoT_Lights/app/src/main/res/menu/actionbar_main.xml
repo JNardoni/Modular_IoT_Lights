@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <!-- action button to turn the panel on/off -->
+    <item android:title="Turn on/Off"
+        android:id="@+id/on_off_toggle"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:icon="@drawable/on_switch"
+        android:checked="true"/>
+    <!-- checked is used to determine whether the panel is on or off. True on, false off-->
+
+
+
+    <!-- action button adding new lights to panels -->
+    <item android:title="Add New Panels"
+        android:id="@+id/add_new_panels"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/plus_sign"/>
+
+
+    <!-- action button for extra stuff idk -->
+    <item android:title="idk"
+        android:id="@+id/copy"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:icon="@drawable/triangle"/>
+</menu>
