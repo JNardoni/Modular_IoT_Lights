@@ -14,12 +14,19 @@
     <!-- checked is used to determine whether the panel is on or off. True on, false off-->
 
 
-
     <!-- action button adding new lights to panels -->
     <item android:title="Add New Panels"
         android:id="@+id/add_new_panels"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
+        android:icon="@drawable/add_lights"/>
+
+
+    <!-- action button adding new lights to panels -->
+    <item android:title="Add New Mode"
+        android:id="@+id/add_new_mode"
+        android:orderInCategory="100"
+        app:showAsAction="always"
         android:icon="@drawable/plus_sign"/>
 
 
