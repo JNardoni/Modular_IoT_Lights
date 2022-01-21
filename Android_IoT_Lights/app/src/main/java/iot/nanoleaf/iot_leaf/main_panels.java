@@ -28,7 +28,7 @@ public class main_panels extends AppCompatActivity {
         setContentView(R.layout.main_layout);
 
         //-------Load bundles from previous usages of the app-----
-
+        //TO-DO
 
 
         //------Create the adapter for the list of modes to switch between----
@@ -51,8 +51,8 @@ public class main_panels extends AppCompatActivity {
         DefinePanelClass();
     }
 
-    //-------------------------------------Action BAR CLASSES------------------------------------
-    //Inflator for the action menu, houses general settings and some needed settings
+    //--------------------------------Action BAR CLASSES------------------------------------
+    //Inflater for the action menu, houses general settings and some needed settings
     @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
 
@@ -140,4 +140,13 @@ public class main_panels extends AppCompatActivity {
         }
         buildPanels(color_array);
     }
+
+
+    void sendToArduino() {
+        ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
+        posttoArduino.execute("function","params");
+    }
+
+
+
 }
