@@ -14,6 +14,7 @@ public class main_panels extends AppCompatActivity {
     //Panel Class - 2d matrix containing the information on every element of the panels
     //It is defined as a general, global value here, while each individual panel is defined in DefinePanelClass beloe
     private PanelClass [] [] LightPanels = new PanelClass[panel_setup.X_MAX][panel_setup.Y_MAX];
+    private int numPanels = 0;
 
     //List of user built modes
     ArrayList<String> modes = new ArrayList<String>();
@@ -99,24 +100,6 @@ public class main_panels extends AppCompatActivity {
 
     //-----------------------------BUILDING THE PANELS---------------------------------
 
-    //Receives information to build the panel matrix
-    //When the layout is assigned by the user in panel_setup, the matrix is composed of 0, 1, and 2
-    //0s mean the spot in the array was never assigned. 1s mean that something nearby was placed, but that spot was not
-    //2s are active spots, and are set to active in the LightPanel array
-    protected void buildPanels(int [] [] color_array) {
-        if (color_array == null) {
-            return;
-        }
-        else {  //Shuffles through the entire x,y array, and if the spot was set to active by user, sets it active in this one
-            for (int y = 0; y < panel_setup.Y_MAX; y++) {
-                for (int x = 0; x < panel_setup.X_MAX; x++) {
-                    if (color_array[x][y] == 2)
-                        LightPanels[x][y].active = 1;
-                }
-            }
-        }
-    }
-
     //Gets the result from the Panel Setup
     //When a new light structure is set, it comes back here with the panels that are being used,
     //defined by a 2 the panel matrix.
@@ -141,11 +124,44 @@ public class main_panels extends AppCompatActivity {
         buildPanels(color_array);
     }
 
+    //Receives information to build the panel matrix
+    //When the layout is assigned by the user in panel_setup, the matrix is composed of 0, 1, and 2
+    //0s mean the spot in the array was never assigned. 1s mean that something nearby was placed, but that spot was not
+    //2s are active spots, and are set to active in the LightPanel array
+    protected void buildPanels(int [] [] color_array) {
+        if (color_array == null) {
+            return;
+        }
+        else {  //Shuffles through the entire x,y array, and if the spot was set to active by user, sets it active in this one
+            numPanels = 0;
+            for (int y = 0; y < panel_setup.Y_MAX; y++) {
+                for (int x = 0; x < panel_setup.X_MAX; x++) {
+                    if (color_array[x][y] == 2) {
+                        LightPanels[x][y].active = 1;
+                        numPanels += 1;
+                    }
+                }
+            }
+        }
+        sendPanelsToArduino();
+    }
+
+    protected void sendPanelsToArduino() {
+        String panels = numPanels+"";
+
+        ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
+        posttoArduino.execute("setup_panels", panels);  // ("function","params")
+
+
+    }
 
     void sendToArduino() {
         ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
         posttoArduino.execute("function","params");
     }
+
+
+
 
 
 

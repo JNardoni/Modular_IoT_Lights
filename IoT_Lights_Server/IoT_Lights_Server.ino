@@ -13,30 +13,35 @@
 #include <time.h>
 #include <stdlib.h>
 
-
-#define LED_PIN   0
-#define LEDS_PER_PANEL  11
-
-int NUM_PANELS = 0;
-int NUM_LEDS = NUM_PANELS*LEDS_PER_PANEL;
-
-//#define BRIGHTNESS  175
-#define LED_TYPE    WS2812B
-#define COLOR_ORDER GRB
-#define UPDATES_PER_SECOND 10000
-
+//Network Setup
 
 char ssid[] = "Nardoni Network";
 char pass[] = "2E0325D0CE";
 int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
+aREST rest = aREST();
+//Definitions for led strip setup
+#define LED_PIN         0
+#define LEDS_PER_PANEL  11
+
+#define LED_TYPE    WS2812B
+#define COLOR_ORDER GRB
+#define UPDATES_PER_SECOND 10000
+
+uint8_t NUM_PANELS = 0;
+int NUM_LEDS = NUM_PANELS*LEDS_PER_PANEL;
+
+//Definitions for modes and status
+
+#define MAX_MODES   10
+
 //int NUM_PANELS = 1;
 //int NUM_LEDS = NUM_PANELS*LEDS_PER_PANEL;
-int ON = 1;
-int BRIGHTNESS = 60;
-int MODE = 0;
-int MODES_SET = 0;
+uint8_t ON = 1;
+uint8_t BRIGHTNESS = 60;
+uint8_t CURRENT_MODE = 0;
+uint8_t MODES_SET = 0;
 
 /* MODES
  * 
@@ -52,12 +57,13 @@ int MODES_SET = 0;
 
 CRGBPalette16 currentPalette;
 TBlendType    currentBlending;
-CRGB leds[NUM_LEDS];
-
+CRGB *leds; //leds stores an array of the current config of each led for fastled
+            //Instead, a pointer to an array. Each spot is allocated on startup, as 
+            //well as anytime the number of panels is changed
 
 // Declare functions to be exposed to the API
 int addMode(String command);
-
+int setupPanels(String command);
 
 struct panelOrient {
   uint8_t panelNum;
@@ -75,7 +81,6 @@ struct panelOrient {
 
 
 void configurePanels() {
-
 
 }
 
@@ -102,7 +107,10 @@ void setup() {
 
    
   // Function to be exposed
-  rest.function("addmode",addMode);
+  rest.function("setup_panels",setupPanels);
+
+
+  initLEDarray();
 
   // Give name and ID to device (ID should be 6 characters long)
   rest.set_id("1");
@@ -133,13 +141,20 @@ void loop() {
   
   WiFiClient client = server.available();   // listen for incoming clients
 
-  if (!client) {                             // if you get a client,
+  if (!client) { // if you get a client,
     //MODE = getNewMode(client);
     //Serial.println(MODE);
     // close the connection:
     client.stop();
     Serial.println("client disonnected");
   }
+
+  if (ON) {
+
+
+    
+  }
+  
     for (int j = 0; j < LEDS_PER_PANEL; j++) {
       leds[j] = CRGB::Blue;
     }
@@ -181,8 +196,31 @@ void loop() {
   rest.handle(client);
 }
 
-int addMode(String command) {
+//Initiates the panels so the program knows how many panels theyre sending 
+//information to. Also update num_leds
+//RESTful call from the app
+//Params: String with the number of panels, converted to int inside
+//Output: 1 on success, 0 on fail 
+int setupPanels(String command) {
 
+  //Checks if an appropriate number of panels is added
+  if (command.toInt() > 0 && command.toInt() < 256) {
+    NUM_PANELS = command.toInt(); //Convert string to int
+    NUM_LEDS = NUM_PANELS * LEDS_PER_PANEL; //Also changes number of leds
+    initLEDarray();
+    return 1;
+  }
+  return 0;  
+}
+
+
+void initLEDarray() {
+
+  if (leds != NULL)
+    free (leds);
+  
+  leds = (CRGB *) malloc (NUM_LEDS * sizeof (CRGB));  
+  
 }
 
 //Mode 1 : 
