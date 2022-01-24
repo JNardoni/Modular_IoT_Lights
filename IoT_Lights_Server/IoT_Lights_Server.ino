@@ -1,13 +1,11 @@
 #include <WiFi101.h>
-#include <WiFiClient.h>
-#include <WiFiServer.h>
-#include <WiFiSSLClient.h>
-#include <WiFiUdp.h>
-#include <SPI.h>
+//#include <WiFiClient.h>
+//#include <WiFiServer.h>
+//#include <WiFiSSLClient.h>
+//#include <WiFiUdp.h>
+//#include <SPI.h>
 #include <WiFi101OTA.h>
 #include <aREST.h>
-
-//#define NUM_LEDS  6
 
 #include <FastLED.h>
 #include <time.h>
@@ -27,33 +25,42 @@ aREST rest = aREST();
 
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-#define UPDATES_PER_SECOND 10000
+#define UPDATES_PER_SECOND 50
 
 uint8_t NUM_PANELS = 0;
 int NUM_LEDS = NUM_PANELS*LEDS_PER_PANEL;
+
+uint8_t count = 0;
+
 
 //Definitions for modes and status
 
 #define MAX_MODES   10
 
-//int NUM_PANELS = 1;
-//int NUM_LEDS = NUM_PANELS*LEDS_PER_PANEL;
 uint8_t ON = 1;
 uint8_t BRIGHTNESS = 60;
 uint8_t CURRENT_MODE = 0;
 uint8_t MODES_SET = 0;
 
-/* MODES
- * 
- * 1. 
- * 2.
- * 3.
- * 4.
- * 5.
- * 6.
- * 7.
- * 8.
- */
+
+//Mode: A mode is a set playable structure for the light panels. It consists of,
+//1. A pattern. Patterns are premade, and consist of various ways that the panels change their color
+//        It can consist of each panel smoothly changing lights, a rainbow of lights moving up/down the wall, etc
+//2. A playspeed. This determines how fast the pattern on the lights is updating its position
+//3. A color palatte. Color palattes define what colors are being used for the panels in the current pattern
+//4. A pointer to the function of the pattern. This allows the pattern to be played dynamically later on without a switch
+struct panelModes{
+  uint8_t set = 0;
+  uint8_t playspeed;  
+  uint8_t pattern;  
+  void  (*pattern_func)();
+
+  CRGB colorPalette[16];  
+};
+
+struct panelModes PLAYABLE_MODES[MAX_MODES];
+
+
 
 CRGBPalette16 currentPalette;
 TBlendType    currentBlending;
@@ -105,18 +112,23 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);       
   currentBlending = LINEARBLEND;
 
-   
-  // Function to be exposed
+
+  
+  // Functions to be exposed for restful calls
+  //Can have up to 5 functions for the MKR1000
   rest.function("setup_panels",setupPanels);
+  rest.function("add_mode",addMode);
+  rest.function("settings",changeSettings);
 
 
-  initLEDarray();
-
+  //initializations, the actual leds and RNG
+  initLEDarray();  
+  randomSeed(analogRead(1));
+  
   // Give name and ID to device (ID should be 6 characters long)
   rest.set_id("1");
   rest.set_name("IoT Lights");
-  
-  
+    
 
   while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to SSID: ");
@@ -135,65 +147,30 @@ void setup() {
 
 }
 // put your main code here, to run repeatedly:
+//Purpose:
+//1. Check for software updates
+//2. Listens for a conneciton
+//3. If on, allows the pattern to move forward 1 cycle
+//4. 
 void loop() {
   //Listens for OTA updates
   WiFiOTA.poll();
   
   WiFiClient client = server.available();   // listen for incoming clients
-
   if (!client) { // if you get a client,
-    //MODE = getNewMode(client);
-    //Serial.println(MODE);
     // close the connection:
-    client.stop();
-    Serial.println("client disonnected");
+    FastLED.delay(2000);
   }
-
-  if (ON) {
-
-
+  else {
     
+    if (ON) {
+      PLAYABLE_MODES[CURRENT_MODE].pattern_func();
+    } 
+    //FastLED.show();   
+    FastLED.delay(1000 / UPDATES_PER_SECOND);
+
+    rest.handle(client);
   }
-  
-    for (int j = 0; j < LEDS_PER_PANEL; j++) {
-      leds[j] = CRGB::Blue;
-    }
-    for (int j = LEDS_PER_PANEL; j < LEDS_PER_PANEL*2; j++) {
-      leds[j] = CRGB::Red;
-    }
-    for (int j = LEDS_PER_PANEL*2; j < LEDS_PER_PANEL*3; j++) {
-      leds[j] = CRGB::Purple;
-    }
-  
-/*
-  switch (MODE) {
-    case 0 :
-      for (int i =0; i < NUM_LEDS; i++) {
-        leds[i] = CRGB::Red;
-      }
-      break;
-
-    case 1 :
-      for (int i =0; i < NUM_LEDS; i++) {
-        leds[i] = CRGB::Blue;
-      }
-      break;
-
-    case 2 :
-      for (int i =0; i < NUM_LEDS; i++) {
-        leds[i] = CRGB::Green;
-      }
-      break;
-      
-    default:
-      break;
-  }      */
-  
-  FastLED.show();   
-
-  FastLED.delay(100);
-
-  rest.handle(client);
 }
 
 //Initiates the panels so the program knows how many panels theyre sending 
@@ -207,30 +184,23 @@ int setupPanels(String command) {
   if (command.toInt() > 0 && command.toInt() < 256) {
     NUM_PANELS = command.toInt(); //Convert string to int
     NUM_LEDS = NUM_PANELS * LEDS_PER_PANEL; //Also changes number of leds
-    initLEDarray();
+    initLEDarray(); //Creates new led array
     return 1;
   }
   return 0;  
 }
 
-
+//Initialize Led arrays
+//leds color stored in array of size num_leds
+//When new panels are added (or panels removed) the old array is freed and a new one is created
 void initLEDarray() {
 
-  if (leds != NULL)
+  if (leds != NULL) //frees old leds
     free (leds);
   
-  leds = (CRGB *) malloc (NUM_LEDS * sizeof (CRGB));  
+  leds = (CRGB *) malloc (NUM_LEDS * sizeof (CRGB));  //create new array
   
 }
-
-//Mode 1 : 
-void Mode_1() {
-
-  
-
-  
-}
-
 
 void printWifiStatus() {
   // print the SSID of the network you're attached to:

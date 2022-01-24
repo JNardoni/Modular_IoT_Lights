@@ -3,17 +3,18 @@
 //        It can consist of each panel smoothly changing lights, a rainbow of lights moving up/down the wall, etc
 //2. A playspeed. This determines how fast the pattern on the lights is updating its position
 //3. A color palatte. Color palattes define what colors are being used for the panels in the current pattern
-
+/*
 struct panelModes{
   uint8_t set = 0;
   uint8_t playspeed;  
   uint8_t pattern;  
+  void  (*pattern_func)();
 
   CRGB colorPalette[16];  
 };
 
 struct panelModes PLAYABLE_MODES[MAX_MODES];
-
+*/
 
 
 //Adds, updates, or deletes a playable mode for the light panels
@@ -31,7 +32,7 @@ int addMode(String command) {
 
   //First character : whether its adding or deleting a mode. If 0, mode in character 2 
   //is being deleted
-  if (command[0] == "0") {
+  if (command[0] == '0') {
     PLAYABLE_MODES[command[1]].set = 0;
     return 1;
   }
@@ -42,21 +43,28 @@ int addMode(String command) {
 
   //2nd spot in the command string: which slot to write to. This is used in case a previous mode is being
   //updated as opposed to starting from scratch. If being rewritten, just writes over the old mode entirely
-  int mode_slot = command[1].toInt();
 
+  int mode_slot = getIntFromCommand(1,command);
 
   PLAYABLE_MODES[mode_slot].set = 1;  //Adds it to the known set of modes
-  PLAYABLE_MODES[mode_slot].pattern = command[2].toInt(); //
-  PLAYABLE_MODES[mode_slot].playspeed = command[3].toInt();  
+  PLAYABLE_MODES[mode_slot].pattern = getIntFromCommand(2,command); //Adds the pattern
+  PLAYABLE_MODES[mode_slot].playspeed = getIntFromCommand(3,command);  //Adds the playspeed
 
   //For each color in the color palette, grabs the next three spaces of the command string
   //Auto converts them from char to integer, and performs the needed modification to range the entire 0-255 spectrum.
   //Since the chars start at 33 (!), each val is subtracted by 33 so 33 = 0
   //The string spaces begin at 4 and stretch to 55
   for (int j = 0; j < 16; j++) {
-    colorPalette[j] = CRGB((command[4+j*3]-33)*3,(command[5+j*3]-33)*3,(command[6+j*3]-33)*3);
+    PLAYABLE_MODES[mode_slot].colorPalette[j] = CRGB((command[4+j*3]-33)*3,(command[5+j*3]-33)*3,(command[6+j*3]-33)*3);
   }
 
-  return 1;
+  //Switch statement to assign the mode storage struct a pointer to the pattern 
+  //This allows the main Loop to continuouslt call the function without a block of switchs/if statements
+  switch(PLAYABLE_MODES[mode_slot].pattern) {
+    case 1:
+      PLAYABLE_MODES[mode_slot].pattern_func = Pattern_1;
+  }
   
+
+  return 1;  
 }
