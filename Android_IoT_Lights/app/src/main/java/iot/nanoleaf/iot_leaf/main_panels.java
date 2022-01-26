@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 
@@ -15,6 +17,7 @@ public class main_panels extends AppCompatActivity {
     //It is defined as a general, global value here, while each individual panel is defined in DefinePanelClass beloe
     private PanelClass [] [] LightPanels = new PanelClass[panel_setup.X_MAX][panel_setup.Y_MAX];
     private int numPanels = 0;
+    private int modesSet = 0; //A max of 10 modes can be set at a time
 
     //List of user built modes
     ArrayList<String> modes = new ArrayList<String>();
@@ -81,16 +84,34 @@ public class main_panels extends AppCompatActivity {
                 startActivityForResult(setupPanels,1);
                 break;
             case R.id.on_off_toggle: //Checks if the panel is on or not. Changes the on/off button, and marks it as its new state
+                String command;
                 if(item.isChecked()) {
                     item.setIcon(R.drawable.off_switch);
                     item.setChecked(false);
+                    command = "00";
                 }
                 else {
                     item.setIcon(R.drawable.on_switch);
                     item.setChecked(true);
+                    command = "01";
                 }
+                //Settings string command: two digits.
+                // First digit -> dictates which setting is being changed. 0 -> power, 1-> brightness, 2-> active mode
+                    // second digit for power -> dictates whether it is turning on or off
+                sendToArduino("settings", command);  // ("function","params")
 
                 break;
+            case R.id.add_new_mode: //Adds new modes to the setup
+                if (modesSet >=10) { //Only 10 modes can be active at a time
+                    Toast.makeText(this, "Max modes set!", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                //Calls the add mode to adda a new mode from scratch
+                Intent AddModeIntent = new Intent(main_panels.this, AddMode.class);
+                this.startActivity(AddModeIntent);
+
+                break;
+
          /*   case R.id.copy:
                 Toast.makeText(this, "Copy Clicked", Toast.LENGTH_SHORT).show();
                 break;*/
@@ -105,7 +126,7 @@ public class main_panels extends AppCompatActivity {
     //defined by a 2 the panel matrix.
     //Request codes:
     //1: panel_setup return
-    //If result is ok, success, data is added to a temporary matrix and sent to vuildPanels
+    //If result is ok, success, data is added to a temporary matrix and sent to buildPanels
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -143,21 +164,33 @@ public class main_panels extends AppCompatActivity {
                 }
             }
         }
-        sendPanelsToArduino();
+        sendToArduino("setup_panels", numPanels+"");
     }
-
+/*
     protected void sendPanelsToArduino() {
-        String panels = numPanels+"";
+        String panels = ;
 
         ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
         posttoArduino.execute("setup_panels", panels);  // ("function","params")
 
 
-    }
+    }*/
 
-    void sendToArduino() {
+    //Sends a REStful function command to the server being hosted by the arduino.
+    //The arduino looks for a function call, which will trigger a function to be executed on the arduino
+    //It will then grab the parameters from the command string. The command string is set up as a series
+    //of combined parameters. Each digit in the string is used to tell the arduino the next parameter.
+    //Types of function calls:
+    //1. settings
+    //      First digit in string: The setting being changed
+    //      0 -> power, 1-> brightness, 2-> active mode
+    //      Second digit: The value its being changed to. Power: 0 off, 1 on. Brightness: 0-9. Mode: 0-9 if mode is set
+    //2. setup_panels
+    //      Only sends the number of panels added to the wall. Whatever number will be converted to an int
+    //3. add_mode
+    void sendToArduino(String function, String command) {
         ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
-        posttoArduino.execute("function","params");
+        posttoArduino.execute(function, command); // ("restful function","params")
     }
 
 

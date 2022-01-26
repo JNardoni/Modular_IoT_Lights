@@ -11,7 +11,6 @@ import java.net.URL;
 
 import static android.content.ContentValues.TAG;
 
-
 public class ArduinoComms extends Activity {
     static String URL = "http://192.168.1.48";
 

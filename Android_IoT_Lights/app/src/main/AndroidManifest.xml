@@ -17,6 +17,8 @@
         <activity android:name=".panel_setup"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         </activity>
+        <activity android:name=".AddMode">
+        </activity>
     </application>
 
 </manifest>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/textInputModeName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:hint="@string/txt_name_mode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:maxLines="1"
+        android:inputType="text"/>
+
+    <TextView
+        android:id="@+id/textSpeed"
+        android:layout_width="124dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="227dp"
+        android:layout_marginBottom="3dp"
+        android:text="@string/txt_speed"
+        app:layout_constraintBottom_toTopOf="@+id/speedBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputModeName" />
+
+    <SeekBar
+        android:id="@+id/speedBar"
+        android:layout_width="227dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="59dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="94dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputModeName" />
+
+    <TextView
+        android:id="@+id/textSpeedValue"
+        android:layout_width="49dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginEnd="44dp"
+        android:text="0"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputModeName" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
