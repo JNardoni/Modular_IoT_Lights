@@ -148,7 +148,6 @@ public class panel_setup extends Activity {
     //Sieds: 0 top, 1 right, 2 bot, 3 left.
     //If all is ok, passes the NEW PANEL to addNearby
     public void checkNearby(int x, int y) {
-
         addNearby(x-1,y, 3); //Checks to the left
         addNearby(x+1,y, 1); //Checks to right
         addNearby(x,y+1, 2); //Bot

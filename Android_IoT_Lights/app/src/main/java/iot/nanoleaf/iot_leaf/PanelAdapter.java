@@ -13,6 +13,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
+//The adapter which handles information being displayed on the lit of modes
 public class PanelAdapter extends ArrayAdapter<String> {
     public ArrayList<String> LightModes;
 
@@ -26,23 +28,17 @@ public class PanelAdapter extends ArrayAdapter<String> {
         LayoutInflater ListInflater = LayoutInflater.from(getContext());
         View listView = ListInflater.inflate(R.layout.list_mode_display, parent, false);
 
-        //Thumbnail array
- /*       ArrayList<Integer> image = new ArrayList<Integer>(
-                Arrays.asList(R.drawable.iphone11th, R.drawable.galaxys20th,R.drawable.pixel4th,
-                        R.drawable.v60thinqth,R.drawable.edgeth,R.drawable.pureviewth));*/
 
         //chose the right positions in each of the xml string lists
         String displayModes = LightModes.get(position);
 
         //set views
         TextView topText = (TextView) listView.findViewById(R.id.ModeName);
-      //  TextView botText = (TextView) listView.findViewById(R.id.phoneInfoText);
-       // ImageView thumbnailImage = (ImageView) listView.findViewById(R.id.phoneThumbnail);
 
         //change text fields
         topText.setText(displayModes);
-       // botText.setText(phoneInfo);
-       // thumbnailImage.setImageResource(image.get(position));
+
+        //return this mode
         return listView;
     }
 

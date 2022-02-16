@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/layoutAddMode">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/textInputModeName"
@@ -40,6 +41,8 @@
         android:layout_marginStart="59dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="94dp"
+        android:max="10"
+        android:min="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +54,7 @@
         android:layout_height="22dp"
         android:layout_marginTop="27dp"
         android:layout_marginEnd="44dp"
-        android:text="0"
+        android:text="1"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputModeName" />
@@ -115,6 +118,27 @@
         android:text="@string/txt_pattern_2"
         app:layout_constraintStart_toEndOf="@+id/textPatt1"
         app:layout_constraintTop_toBottomOf="@+id/imgPattern2" />
+
+    <Button
+        android:id="@+id/btnAddColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="15dp"
+        android:text="+ Add Color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPatt1" />
+
+
+    <Button
+        android:id="@+id/btnconfirmMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="19dp"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

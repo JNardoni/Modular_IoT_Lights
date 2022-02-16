@@ -176,7 +176,7 @@ public class main_panels extends AppCompatActivity {
 
     }*/
 
-    //Sends a REStful function command to the server being hosted by the arduino.
+    //Sends a RESTful function command to the server being hosted by the arduino.
     //The arduino looks for a function call, which will trigger a function to be executed on the arduino
     //It will then grab the parameters from the command string. The command string is set up as a series
     //of combined parameters. Each digit in the string is used to tell the arduino the next parameter.
@@ -188,14 +188,9 @@ public class main_panels extends AppCompatActivity {
     //2. setup_panels
     //      Only sends the number of panels added to the wall. Whatever number will be converted to an int
     //3. add_mode
-    void sendToArduino(String function, String command) {
+    public void sendToArduino(String function, String command) {
         ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
         posttoArduino.execute(function, command); // ("restful function","params")
     }
-
-
-
-
-
 
 }
