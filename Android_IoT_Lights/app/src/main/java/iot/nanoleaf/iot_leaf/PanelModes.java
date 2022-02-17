@@ -1,5 +1,8 @@
 package iot.nanoleaf.iot_leaf;
 
+//TODO use or delete
+//Rpobably use, cane store more info on modes and edit/delete them
+//Defined, but unused. Should be used for displays
 public class PanelModes {
     String name;
     int set;
@@ -16,13 +19,5 @@ public class PanelModes {
         name = modeName;
         set = 1;
 
-
-
-
     }
-
-
-
-
-
 }

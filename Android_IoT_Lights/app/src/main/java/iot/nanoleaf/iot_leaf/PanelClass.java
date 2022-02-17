@@ -1,5 +1,7 @@
 package iot.nanoleaf.iot_leaf;
 
+//TODO use or delete
+//Defined, but never used
 public class PanelClass {
     int active; //Whether or not the panel is active
 

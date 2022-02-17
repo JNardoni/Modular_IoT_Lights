@@ -36,7 +36,7 @@ public class AddMode extends Activity {
 
     SeekBar SeekSpeed;  //Definitions for the objects in layout
     TextView TextSpeed;
-    ImageView Pattern1;
+    ImageView Pattern1; //So far, only 2 patterns have been added to the arduino. More to come
     ImageView Pattern2;
     Button addColor;
     Button confirmMode;
@@ -45,7 +45,7 @@ public class AddMode extends Activity {
 
     int selected = 1;
 
-    final int MAX_COLORS = 8;
+    final int MAX_COLORS = 8; //Sets max to 8. Could be 16, but could be a little much
 
     int layoutWidth = 0; //the width of the layout, used to dynamically rescale the color bar
 
@@ -80,7 +80,7 @@ public class AddMode extends Activity {
         //--------Set on click listeners for the patterns, so the user can decide which one they want to use------
         Pattern1 = (ImageView) findViewById(R.id.imgPattern1);
         Pattern2 = (ImageView) findViewById(R.id.imgPattern2);
-        //Whichever is selected changes ots padding so that it appears to be selected
+        //Whichever is selected changes its padding so that it appears to be selected
         Pattern1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,6 +188,7 @@ public class AddMode extends Activity {
         }
 
         addingColor.setLayoutParams(lp);
+
         //-------Set the constraints for each color bar--------
         //Left most is constrained to the parent layout, each consecutive is constrained to the left sibling
 
@@ -199,7 +200,6 @@ public class AddMode extends Activity {
         if (barNum == 0) {
             cs.connect(addingColor.getId(), ConstraintSet.TOP, R.id.btnAddColor, ConstraintSet.BOTTOM);
             cs.connect(addingColor.getId(), ConstraintSet.LEFT, R.id.layoutAddMode, ConstraintSet.LEFT);
-
         }
         else { //Else, bound to previous id
             cs.connect(addingColor.getId(), ConstraintSet.LEFT, ids.get(ids.size()-2), ConstraintSet.RIGHT);
@@ -234,7 +234,7 @@ public class AddMode extends Activity {
                 .setOnColorSelectedListener(new OnColorSelectedListener() {
                     @Override
                     public void onColorSelected(int selectedColor) {
-                          Toast.makeText(context, "onColorSelected: 0x" + Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(context, "onColorSelected: 0x" + Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
                         //Toast.makeText(context, "Max modes set!", Toast.LENGTH_SHORT).show();;
                     }
                 })
