@@ -5,14 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.constraintlayout.widget.Constraints;
 
 public class panel_setup extends Activity {
 
@@ -44,13 +41,13 @@ public class panel_setup extends Activity {
         btnConfirm = findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) { //Returns the matrix of which lights are set and which arent
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("int", 1);
 
-                Bundle mBundle = new Bundle();
-                mBundle.putSerializable("matrix", coordinate_array);
-                returnIntent.putExtras(mBundle);
+                Bundle mBundle = new Bundle(); //Bundle for the matrix
+                mBundle.putSerializable("matrix", coordinate_array); //Attach the matrix to bundle
+                returnIntent.putExtras(mBundle); //add to the intent
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
             }
@@ -92,6 +89,7 @@ public class panel_setup extends Activity {
         //First defines the parameters for the triangles. Ensures theyre all the same size
         ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(200,200);
 
+        //Set the margins for each light in relation to the others
         params.leftMargin = 100;
         params.rightMargin = 10;
         params.topMargin = 10;
@@ -103,16 +101,18 @@ public class panel_setup extends Activity {
 
         newTri.setImageDrawable(getResources().getDrawable(R.drawable.triangle_add));
 
-        if((x+y) % 2 != 0 )  newTri.setRotation(180);
+        if((x+y) % 2 != 0 )  newTri.setRotation(180); //Rotates odd numvered triangles
 
+        //When that triangle is clicked, it activates or unactivates.
         newTri.setOnClickListener(new View.OnClickListener() {
          @Override
          public void onClick(View view) {
 
-             checkNearby(x, y);
+             checkNearby(x, y); //If its activating for the first time, add adjacent triangles
 
              imageview = findViewById(view.getId());
 
+             //Changes the image to be either activated or unactivated, depending, as well as its corresponding position in the light matrix
              if (coordinate_array[x][y] == 1) {
                  imageview.setImageDrawable(getResources().getDrawable(R.drawable.triangle));
                  coordinate_array[x][y] = 2;
@@ -133,6 +133,7 @@ public class panel_setup extends Activity {
 
         constraints.constrainHeight(newTri.getId(), 190);
 
+        //As each triangle is constrained to the center triangle, adjusts its x and y position based off relation to that centerpoint
         constraints.connect(newTri.getId(), ConstraintSet.TOP, R.id.centerpoint, ConstraintSet.TOP, 210*y);
         constraints.connect(newTri.getId(), ConstraintSet.LEFT, R.id.centerpoint, ConstraintSet.LEFT, 121*x);
 

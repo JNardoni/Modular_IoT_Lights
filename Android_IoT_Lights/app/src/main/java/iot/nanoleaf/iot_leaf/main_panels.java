@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -39,10 +41,16 @@ public class main_panels extends AppCompatActivity {
 
         listView = findViewById(R.id.linear_list);
 
-        if (!modes.isEmpty()) {
-            panelAdapter = new PanelAdapter(this, modes);
-            listView.setAdapter(panelAdapter);
-        }
+        panelAdapter = new PanelAdapter(this, modes); //Setup the panel adapter
+        listView.setAdapter(panelAdapter);  //attach it
+
+        //Set up the on click for a mode. If a mode is clicked, makes an HTTP call to the server, indicating a change in mode
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+               sendToArduino("settings","2"+position); //Function: changing mode is a feauter of settings
+            }                                                             //command: the first digit is which setting is being changed, 2->active mode
+        });                                                               //        the second digit is which mode is being changed to, meaning position
 
         //-----Set up the title bar------
         actionBar = getSupportActionBar();
@@ -108,7 +116,7 @@ public class main_panels extends AppCompatActivity {
                 }
                 //Calls the add mode to adda a new mode from scratch
                 Intent AddModeIntent = new Intent(main_panels.this, AddMode.class);
-                this.startActivity(AddModeIntent);
+                this.startActivityForResult(AddModeIntent, 2);
 
                 break;
 
@@ -130,9 +138,9 @@ public class main_panels extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        int [] [] color_array = new int[panel_setup.X_MAX][panel_setup.Y_MAX];
-
         if (requestCode == 1) {
+            int [] [] color_array = new int[panel_setup.X_MAX][panel_setup.Y_MAX];
+
             if (resultCode == RESULT_OK) {
                 Object[] obj_array = (Object[]) data.getExtras().getSerializable("matrix");
                 if (obj_array != null) {
@@ -141,8 +149,15 @@ public class main_panels extends AppCompatActivity {
                     }
                 }
             }
+            buildPanels(color_array);
         }
-        buildPanels(color_array);
+        if (requestCode == 2) {
+            if (resultCode == RESULT_OK) {
+                String newMode = data.getStringExtra("modeName");
+                modes.add(newMode);
+                listView.setAdapter(panelAdapter);
+            }
+        }
     }
 
     //Receives information to build the panel matrix

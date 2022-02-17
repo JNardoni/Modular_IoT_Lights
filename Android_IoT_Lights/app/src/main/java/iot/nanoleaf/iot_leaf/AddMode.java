@@ -3,6 +3,7 @@ package iot.nanoleaf.iot_leaf;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -121,17 +122,27 @@ public class AddMode extends Activity {
                     Toast.makeText(view.getContext(), "You must enter a name for the mode", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
-
+                    //Adds the needed information for the HTML REST call
                     String command = "1";   //First digit is whether its being added or removed
                     command += (selected-1);    //Second digit corresponds to the pattern num (starting at 0)
-                    command +=  TextSpeed.getText();
+                    command +=  TextSpeed.getText(); //Third digit corresponds to the speed
 
+                    //adds the remaining information corresponding to the mode colors
                     for (int i = 0; i < setColors.size(); i++) {
                         command += toSendableString(Integer.toHexString(setColors.get(i)));
                     }
+
                     //Makes the server call to add the mode to its memory
+                    ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
                     posttoArduino.execute("add_mode", command); // ("restful function","params")
+
+                    //Adds the name of the mode only, and returns it as an intent
+                    String message=modeName.getText().toString();
+                    Intent returnIntent=new Intent();
+                    returnIntent.putExtra("modeName",message);
+                    setResult(2,returnIntent); //resultcode for this return is 2
+                    setResult(Activity.RESULT_OK,returnIntent); //Add ok result
+                    finish();
                 }
             }
         });
@@ -198,9 +209,8 @@ public class AddMode extends Activity {
 
         //-------Change the current color of the bar, and allows it to be clicked on and modified later------
 
-//        getNewColor(barNum);
         addingColor.setColorFilter(setColors.get(barNum));
-
+        //When the image is clicked later, allows the color to be changed
         addingColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
