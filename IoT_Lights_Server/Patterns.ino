@@ -24,10 +24,10 @@ void Pattern_1() {
   
   if (count >= 150-(PLAYABLE_MODES[CURRENT_MODE].playspeed*10)) { //Determines the speed which the pattern changes
     count = 0;                                                    //Base speed: 150 = 3 seconds, 
-    int randPanel = random(NUM_PANELS);
-    int randColor = random(16);
+    int randPanel = random(NUM_PANELS); //picks a random color
+    int randColor = random(PLAYABLE_MODES[CURRENT_MODE].colors); //picks a random color from the set colors
 
-    FillPanel(randPanel, PLAYABLE_MODES[CURRENT_MODE].colorPalette[randColor]);   
+    FillPanel(randPanel, PLAYABLE_MODES[CURRENT_MODE].colorPalette[randColor]); //fills the panel
     
   }  
 }

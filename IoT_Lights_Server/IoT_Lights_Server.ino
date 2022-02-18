@@ -6,6 +6,8 @@
 //#include <SPI.h>
 #include <WiFi101OTA.h>
 #include <aREST.h>
+#include <SD.h>
+
 
 #include <FastLED.h>
 #include <time.h>
@@ -43,16 +45,23 @@ uint8_t CURRENT_MODE = 0;
 uint8_t MODES_SET = 0;
 
 
+//SD card and file setup
+const int chipSelect = 10;
+File modeFile;
+
 //Mode: A mode is a set playable structure for the light panels. It consists of,
 //1. A pattern. Patterns are premade, and consist of various ways that the panels change their color
 //        It can consist of each panel smoothly changing lights, a rainbow of lights moving up/down the wall, etc
 //2. A playspeed. This determines how fast the pattern on the lights is updating its position
 //3. A color palatte. Color palattes define what colors are being used for the panels in the current pattern
 //4. A pointer to the function of the pattern. This allows the pattern to be played dynamically later on without a switch
+//5. The number of colors present in the color palette
 struct panelModes{
   uint8_t set = 0;
   uint8_t playspeed;  
-  uint8_t pattern;  
+  uint8_t pattern; 
+  uint8_t colors;
+   
   void  (*pattern_func)();
 
   CRGB colorPalette[16];  
@@ -105,15 +114,25 @@ void setup() {
   Serial.begin(9600);   
   Serial.println("Start Serial ");   
    
-  //LED strip setup  
+  //---------LED strip setup  -----------
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness(  BRIGHTNESS );
   
-  pinMode(LED_PIN, OUTPUT);       
+  pinMode(LED_PIN, OUTPUT); //setup the led pin   
   currentBlending = LINEARBLEND;
 
+  //------Setup the SD card and file---------
+  //Init the SD card
+  if (!SD.begin(chipSelect)) {
+    Serial.println("initialization failed!");
+    return;
+  }
+  //loads the modes from the save file
+  pinMode(SS, OUTPUT);
+  loadModes();
 
-  
+
+  //--------Setup the restful functions---------
   // Functions to be exposed for restful calls
   //Can have up to 5 functions for the MKR1000
   rest.function("setup_panels",setupPanels);

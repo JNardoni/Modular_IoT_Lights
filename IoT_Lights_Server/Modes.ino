@@ -16,7 +16,6 @@ struct panelModes{
 struct panelModes PLAYABLE_MODES[MAX_MODES];
 */
 
-
 //Adds, updates, or deletes a playable mode for the light panels
 //Called from the android app when the user adds a mod
 //Params: a large string, each character representing the way the panels are setup
@@ -47,24 +46,36 @@ int addMode(String command) {
   int mode_slot = getIntFromCommand(1,command);
 
   PLAYABLE_MODES[mode_slot].set = 1;  //Adds it to the known set of modes
-  PLAYABLE_MODES[mode_slot].pattern = getIntFromCommand(2,command); //Adds the pattern
+  PLAYABLE_MODES[mode_slot].pattern = getIntFromCommand(2,command)+1; //Adds the pattern. Sends 0-9, but modes start at 1. Offets by 1
   PLAYABLE_MODES[mode_slot].playspeed = getIntFromCommand(3,command);  //Adds the playspeed
 
   //For each color in the color palette, grabs the next three spaces of the command string
   //Auto converts them from char to integer, and performs the needed modification to range the entire 0-255 spectrum.
   //Since the chars start at 33 (!), each val is subtracted by 33 so 33 = 0
   //The string spaces begin at 4 and stretch to 55
-  for (int j = 0; j < 16; j++) {
+  int j = 0;
+  while (command[4+j*3] != NULL) {
     PLAYABLE_MODES[mode_slot].colorPalette[j] = CRGB((command[4+j*3]-33)*3,(command[5+j*3]-33)*3,(command[6+j*3]-33)*3);
+    j++;
   }
+  //Assigns the number of colors being used in the palette
+  PLAYABLE_MODES[mode_slot].colors = j;
 
-  //Switch statement to assign the mode storage struct a pointer to the pattern 
-  //This allows the main Loop to continuouslt call the function without a block of switchs/if statements
-  switch(PLAYABLE_MODES[mode_slot].pattern) {
-    case 1:
-      PLAYABLE_MODES[mode_slot].pattern_func = Pattern_1;
-  }
+  //assigns a function to be assigned by its associated pattern
+  assignFunction(mode_slot);
+
+  //Saves the mode into memory. Passes the position of the mode
+  saveModes(mode_slot);
   
-
   return 1;  
+}
+
+
+void assignFunction(int modeNum) {
+  //Switch statement to assign the mode storage struct a pointer to the pattern 
+  //This allows the main Loop to continuously call the function without a block of switchs/if statements  
+  switch(PLAYABLE_MODES[modeNum].pattern) {
+    case 1:
+      PLAYABLE_MODES[modeNum].pattern_func = Pattern_1;
+  }
 }

@@ -10,19 +10,19 @@
     //Second digit = the new mode
 int changeSettings(String command) {
 
-  if (command[0] == '0') {
+  if (command[0] == '0') { //on off
     ON = getIntFromCommand(1,command);
   }
-  else if (command[0] == '1') {    
+  else if (command[0] == '1') {  //brightness  
     BRIGHTNESS = 10 + 10 * getIntFromCommand(1,command);
   }
-  else if (command[0] == '2') {
+  else if (command[0] == '2') { //change mode
     int newMode = getIntFromCommand(1,command);
 
       if (PLAYABLE_MODES[newMode].set == 1) { //If there a new node, initializes the new mode by changing the 
          CURRENT_MODE = newMode;              //active mode and calling the pattern that the mode implements
          switch (PLAYABLE_MODES[newMode].pattern) {
-            case 1:
+            case 1: //pattern 1
                 Pattern_1_init(newMode);
                 break;
          }
