@@ -68,7 +68,6 @@ public class AddMode extends Activity {
         SeekSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-         //       int speed = progress/11 +1; //Speed can go from 1-10, but the bar goes from 1-100
                 TextSpeed.setText(""+ progress );
             }
             @Override

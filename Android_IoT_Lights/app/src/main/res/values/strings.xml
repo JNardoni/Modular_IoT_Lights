@@ -6,7 +6,7 @@
     <string name="txt_name_mode">Enter a name for the mode</string>
     <string name="txt_speed">Transition Speed</string>
     <string name="txt_pattern_select">Select a pattern to display</string>
-    <string name="txt_pattern_1">Pattern 1</string>
-    <string name="txt_pattern_2">Pattern 2</string>
+    <string name="txt_pattern_1">Twinkle</string>
+    <string name="txt_pattern_2">Single Color</string>
 
 </resources>
