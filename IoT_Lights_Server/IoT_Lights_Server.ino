@@ -15,8 +15,8 @@
 
 //Network Setup
 
-char ssid[] = "Nardoni Network";
-char pass[] = "2E0325D0CE";
+char ssid[] = "Secrets";
+char pass[] = "Secrets";
 int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
