@@ -33,7 +33,8 @@ uint8_t NUM_PANELS = 0;
 int NUM_LEDS = NUM_PANELS*LEDS_PER_PANEL;
 
 uint8_t count = 0;
-
+uint8_t GLBL1 = 0;
+uint8_t GLBL2 = 0;
 
 //Definitions for modes and status
 
