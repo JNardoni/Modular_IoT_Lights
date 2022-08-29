@@ -38,6 +38,7 @@ public class AddMode extends Activity {
     TextView TextSpeed;
     ImageView Pattern1; //So far, only 2 patterns have been added to the arduino. More to come
     ImageView Pattern2;
+    ImageView Pattern3;
     Button addColor;
     Button confirmMode;
     ConstraintLayout layout;
@@ -79,6 +80,7 @@ public class AddMode extends Activity {
         //--------Set on click listeners for the patterns, so the user can decide which one they want to use------
         Pattern1 = (ImageView) findViewById(R.id.imgPattern1);
         Pattern2 = (ImageView) findViewById(R.id.imgPattern2);
+        Pattern3 = (ImageView) findViewById(R.id.imgPattern3);
         //Whichever is selected changes its padding so that it appears to be selected
         Pattern1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +88,7 @@ public class AddMode extends Activity {
                 selected = 1;
                 Pattern1.setPadding(10,10,10,10);
                 Pattern2.setPadding(0,0,0,0);
+                Pattern3.setPadding(0,0,0,0);
             }
         });
         Pattern2.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +97,16 @@ public class AddMode extends Activity {
                 selected = 2;
                 Pattern2.setPadding(10, 10, 10, 10);
                 Pattern1.setPadding(0, 0, 0, 0);
+                Pattern3.setPadding(0,0,0,0);
+            }
+        });
+        Pattern3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selected = 3;
+                Pattern3.setPadding(10, 10, 10, 10);
+                Pattern1.setPadding(0, 0, 0, 0);
+                Pattern2.setPadding(0,0,0,0);
             }
         });
 
@@ -287,11 +300,11 @@ public class AddMode extends Activity {
     //Converts the hex string to an output that the server can read in its restful html calls
     //Convert base 16->base 85
     //      receives: string hex - string form of a 6 digit hex variable
-    //      returns: atring RGB - string with the corresponding base 87 value
+    //      returns: string RGB - string with the corresponding base 87 value
     private String toSendableString(String hex) {
         String RGB = ""; //Stores the final 3 digit value
 
-        for (int i = 2; i < 8; i+=2) {  //Circles through the R, G, and B value seperately
+        for (int i = 2; i < 8; i+=2) {  //Circles through the R, G, and B value separately
             String cmd = hex.substring(i, i+2); //Takes the 2 digit hex code (0-255 decimal)
             int j = Integer.parseInt(cmd, 16) / 3;  //Converts that value base 10, but divided by 3 (0-85)
             RGB += (char) (j + 33);    //returns the corresponding ascii character for the 0-85 value, offset by 33 (starts at !, goes to v)

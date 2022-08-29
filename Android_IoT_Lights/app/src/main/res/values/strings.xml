@@ -8,5 +8,6 @@
     <string name="txt_pattern_select">Select a pattern to display</string>
     <string name="txt_pattern_1">Twinkle</string>
     <string name="txt_pattern_2">Single Color</string>
+    <string name="txt_pattern_3">Firework</string>
 
 </resources>
