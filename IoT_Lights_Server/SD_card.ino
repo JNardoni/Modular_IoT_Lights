@@ -30,9 +30,13 @@ void loadModes() {
       modeNum++;
     }
   }
-  else { //if not, prints an erro
-    Serial.println("error opening test.txt");
+  else { //if not, prints an error
+    Serial.println("Could not open the mode file");
+
+    //Make the file in case it doesn't exist
+    SD.open("modelist.txt", FILE_WRITE);
   }  
+  modeFile.close();
 }
 
 //Saves the mode into memory
@@ -60,5 +64,5 @@ void saveModes(int modeToSave) {
     Serial.println("Error opening file");
   }
 
-  
+  modeFile.close();
 }

@@ -47,7 +47,7 @@ uint8_t MODES_SET = 0;
 
 
 //SD card and file setup
-const int chipSelect = 10;
+const int chipSelect = 7;
 File modeFile;
 
 //Mode: A mode is a set playable structure for the light panels. It consists of,
