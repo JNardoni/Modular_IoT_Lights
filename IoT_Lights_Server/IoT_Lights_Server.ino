@@ -128,10 +128,11 @@ void setup() {
     Serial.println("initialization failed!");
     return;
   }
-  //loads the modes from the save file
+  
+  //loads the modes and number of panels from the save file
   pinMode(SS, OUTPUT);
   loadModes();
-
+  NUM_PANELS = loadPanels();
 
   //--------Setup the restful functions---------
   // Functions to be exposed for restful calls
@@ -202,9 +203,11 @@ int setupPanels(String command) {
 
   //Checks if an appropriate number of panels is added
   if (command.toInt() > 0 && command.toInt() < 256) {
-    NUM_PANELS = command.toInt(); //Convert string to int
+    NUM_PANELS = command.toInt(); //Convert string to int    
     NUM_LEDS = NUM_PANELS * LEDS_PER_PANEL; //Also changes number of leds
     initLEDarray(); //Creates new led array
+
+    savePanels(NUM_PANELS); //Save the panels to the sd card
     return 1;
   }
   return 0;  

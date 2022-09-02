@@ -42,7 +42,7 @@ void loadModes() {
 //Saves the mode into memory
 //Writes the information into a text file on the SD card
 
-//Paramst: int modeToSave: int the number of the mode being saved
+//Params: int modeToSave: int the number of the mode being saved
 //return: none
 void saveModes(int modeToSave) {
 
@@ -65,4 +65,53 @@ void saveModes(int modeToSave) {
   }
 
   modeFile.close();
+}
+
+/*
+ * Saves the number of panels to the card.
+ * Done when the panels are initialized, or when new panel setups are added
+ * 
+ * Params: number of panels
+ * returns: none
+ * 
+ */
+void savePanels(int numPanels) {
+
+    //Remove the current iteration of the file - To be replaced with a new panel setup
+    SD.remove("panel_layout.txt");
+
+    modeFile = SD.open("panel_layout.txt", FILE_WRITE);
+
+    //Makes sure the file opened properly
+    if (modeFile) {
+      modeFile.println(numPanels); //Write to file
+    }
+    else {
+      Serial.println("Error opening file");
+    }
+    modeFile.close();
+}
+
+/*
+ * Loads the panels which have been saved to the card.
+ * Done in setup, when the arduino is turned on
+ * 
+ * Params: none
+ * returns: number of panels
+ * 
+ */
+int loadPanels() {
+
+    modeFile = SD.open("panel_layout.txt", FILE_READ);
+    String line;
+    //Check if the file exists
+    if (modeFile) {
+      line = modeFile.readStringUntil('\n');
+      modeFile.close();
+      return line.toInt();
+    }
+    //If file doesnt exist, no panels setup, 0 panels
+    else {
+      return 0;
+    }
 }
