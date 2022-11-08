@@ -36,7 +36,7 @@ public class AddMode extends Activity {
 
     SeekBar SeekSpeed;  //Definitions for the objects in layout
     TextView TextSpeed;
-    ImageView Pattern1; //So far, only 2 patterns have been added to the arduino. More to come
+    ImageView Pattern1; //So far, only 3 patterns have been added to the arduino. More to come
     ImageView Pattern2;
     ImageView Pattern3;
     Button addColor;
@@ -124,6 +124,8 @@ public class AddMode extends Activity {
         //-----Set on click listener for the confirm mode button
         confirmMode = (Button) findViewById(R.id.btnconfirmMode);
         modeName = (EditText) findViewById(R.id.textInputModeName);
+        //Confirmation that the mode is created and is to be added. Verifies the mode is valid, adds it to list, and sends it to the server
+        //TODO - Create its own function
         confirmMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,7 +171,7 @@ public class AddMode extends Activity {
     // theoretical max colors a mode can have is 16. Not every mode will have this many though
 
     //CreateColorBar - Creates the new section of bar when a new color is being added
-    //      Receives: int barNum, the position of the new section of the bar, starts at 0->MAX-1
+    //      @Params: int barNum, the position of the new section of the bar, starts at 0->MAX-1
     //      Returns: nothing
     //      Calledby: onClick from the addcolor button
     private void createColorBar(final int barNum) {
@@ -234,7 +236,7 @@ public class AddMode extends Activity {
     //Calls the flower which the user uses to select the new color being added to the color bar
     // When the new color is selected, adds the color to the color list (if new adds, if updating replaces that position)
     // then changes the background color of the image to represent the new color
-    //      Recieves: int barnum - the number of the position of the color in the color bar
+    //      Params: int barnum - the number of the position of the color in the color bar
     private void getNewColor(final int barNum) {
         final Context context = AddMode.this;
         ColorPickerDialogBuilder
@@ -280,7 +282,7 @@ public class AddMode extends Activity {
 
     //Resizes the individual color bars so that the compilation of all color bars looks like the a single bar take takes up the entire screen
     // First, calculates the new width of the individual bars. Then assigns it to the bar which is being added, then assigns it to each previously added bar
-    //      Receives: LayoutParams lp - params for the section of the bar being added
+    //      Params: LayoutParams lp - params for the section of the bar being added
     private void resizeColorBars(ConstraintLayout.LayoutParams lp) {
 
         //Defines the amount of space the bar has to work with. 50 padding on each side
@@ -299,7 +301,7 @@ public class AddMode extends Activity {
 
     //Converts the hex string to an output that the server can read in its restful html calls
     //Convert base 16->base 85
-    //      receives: string hex - string form of a 6 digit hex variable
+    //      Params: string hex - string form of a 6 digit hex variable
     //      returns: string RGB - string with the corresponding base 87 value
     private String toSendableString(String hex) {
         String RGB = ""; //Stores the final 3 digit value

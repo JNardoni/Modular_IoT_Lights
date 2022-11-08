@@ -121,6 +121,7 @@ public class main_panels extends AppCompatActivity {
             ));
             String inputModes;
             //Grabs a string for each line of the file, corresponding to the filename
+            //TODO move to MemoryManagement, along with other memory options
             while ((inputModes = inputReader.readLine()) != null) {
                 if (modesSet < MAX_MODES) { //Checks to make sure there arent too many modes set in the file
                     modes.add(inputModes);
@@ -319,5 +320,4 @@ public class main_panels extends AppCompatActivity {
         ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
         posttoArduino.execute(function, command); // ("restful function","params")
     }
-
 }
