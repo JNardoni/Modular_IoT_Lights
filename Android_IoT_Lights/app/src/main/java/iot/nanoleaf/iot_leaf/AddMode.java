@@ -129,34 +129,14 @@ public class AddMode extends Activity {
         confirmMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (setColors.size() == 0) {        //First ensures that both a name are set, and that at least 1 color is added. Speed and pattern default to 1 so no
+                if (setColors.size() == 0) {        //First ensures that at least 1 color is added. Speed and pattern default to 1 so no
                     Toast.makeText(view.getContext(), "You must enter at least one color", Toast.LENGTH_SHORT).show();                    //need to check on them
                 }
-                else if (modeName.toString() == "") {
+                else if (modeName.toString() == "") {   //Ensures the name is not blank
                     Toast.makeText(view.getContext(), "You must enter a name for the mode", Toast.LENGTH_SHORT).show();
                 }
-                else {
-                    //Adds the needed information for the HTML REST call
-                    String command = "1";   //First digit is whether its being added or removed
-                    command += (selected-1);    //Second digit corresponds to the pattern num (starting at 0)
-                    command +=  TextSpeed.getText(); //Third digit corresponds to the speed
-
-                    //adds the remaining information corresponding to the mode colors
-                    for (int i = 0; i < setColors.size(); i++) {
-                        command += toSendableString(Integer.toHexString(setColors.get(i)));
-                    }
-
-                    //Makes the server call to add the mode to its memory
-                    ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
-                    posttoArduino.execute("add_mode", command); // ("restful function","params")
-
-                    //Adds the name of the mode only, and returns it as an intent
-                    String message=modeName.getText().toString();
-                    Intent returnIntent=new Intent();
-                    returnIntent.putExtra("modeName",message);
-                    setResult(2,returnIntent); //resultcode for this return is 2
-                    setResult(Activity.RESULT_OK,returnIntent); //Add ok result
-                    finish();
+                else { //If acceptable, converts mode to string,  closes and returns response code
+                    ConvertModeToString();
                 }
             }
         });
@@ -299,11 +279,41 @@ public class AddMode extends Activity {
         }
     }
 
+
+    //Creates the mode. Converts the information into a string to send to the arduino and save into local memory
+    //      Params: none
+    //      returns: none
+    private void ConvertModeToString() {
+        //Adds the needed information for the HTML REST call
+        String command = "1";   //First digit is whether its being added or removed
+        command += (selected-1);    //Second digit corresponds to the pattern num (starting at 0)
+        command +=  TextSpeed.getText(); //Third digit corresponds to the speed
+
+        //adds the remaining information corresponding to the mode colors
+        for (int i = 0; i < setColors.size(); i++) {
+            command += colorsToHexString(Integer.toHexString(setColors.get(i)));
+        }
+
+        //Makes the server call to add the mode to its memory
+        ArduinoComms.PosttoArduino posttoArduino = new ArduinoComms.PosttoArduino();
+        posttoArduino.execute("add_mode", command); // ("restful function","params")
+
+        //Adds the name of the mode only, and returns it as an intent
+        String message=modeName.getText().toString();
+        Intent returnIntent=new Intent();
+        returnIntent.putExtra("modeName", message);
+        returnIntent.putExtra("command", command);
+        setResult(2,returnIntent); //resultcode for this return is 2
+        setResult(Activity.RESULT_OK,returnIntent); //Add ok result
+        finish();
+    }
+
+
     //Converts the hex string to an output that the server can read in its restful html calls
     //Convert base 16->base 85
     //      Params: string hex - string form of a 6 digit hex variable
     //      returns: string RGB - string with the corresponding base 87 value
-    private String toSendableString(String hex) {
+    private String colorsToHexString(String hex) {
         String RGB = ""; //Stores the final 3 digit value
 
         for (int i = 2; i < 8; i+=2) {  //Circles through the R, G, and B value separately

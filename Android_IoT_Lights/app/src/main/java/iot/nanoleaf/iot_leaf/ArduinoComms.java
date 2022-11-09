@@ -28,6 +28,8 @@ public class ArduinoComms extends Activity {
                 connection.connect();
                 responseCode = connection.getResponseCode();
                 Log.i(TAG, "Code" + responseCode);
+
+                //TODO Receive codes to ensure success
             }
             catch(MalformedURLException e) {
                 Log.e(TAG, "Malformed Exception Caught:", e);

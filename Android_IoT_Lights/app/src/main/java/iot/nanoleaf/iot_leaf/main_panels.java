@@ -1,8 +1,11 @@
 package iot.nanoleaf.iot_leaf;
 
 import androidx.appcompat.app.ActionBar;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 //TODO Edit and delete modes
@@ -97,7 +101,7 @@ public class main_panels extends AppCompatActivity {
     //It is defined as a general, global value here, while each individual panel is defined in DefinePanelClass beloe
     private PanelClass [] [] LightPanels = new PanelClass[panel_setup.X_MAX][panel_setup.Y_MAX];
     private int numPanels = 0;
-    private int modesSet = 0; //Counts how many modes have been properly set
+    private int modesSet = 0; //Counts how many modes have been properly set  TODO Merge into memoryManagement
     static int MAX_MODES = 10; //the max modes which can be set at any given time
     //List of user built modes
     ArrayList<String> modes = new ArrayList<String>();
@@ -254,8 +258,15 @@ public class main_panels extends AppCompatActivity {
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
                 String newMode = data.getStringExtra("modeName"); //Get return info
+                String command = data.getStringExtra("command");
+
                 modes.add(newMode); //Adds mode to the list of set modes
                 listView.setAdapter(panelAdapter); //Update the main screen list to include the new mode
+
+                //Sends the file to be saved in memory management
+                PanelModes pm = new PanelModes(newMode, command, this);
+                pm.saveModeToMemory();
+
 
                 //Save the data into a local file, so that it can be pulled when the app is closed
                 try {
