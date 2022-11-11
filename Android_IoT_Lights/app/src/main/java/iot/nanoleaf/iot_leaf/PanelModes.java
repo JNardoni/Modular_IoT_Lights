@@ -3,10 +3,12 @@ package iot.nanoleaf.iot_leaf;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-//TODO Add to
+//TODO Convert to SQLite DB
 
 //Stores all information about the current saved modes for the panel of lights
 public class PanelModes {
@@ -37,13 +39,15 @@ public class PanelModes {
             fileStreamWriter.write(this.pattern);  //First digit of string: Pattern Selected
             fileStreamWriter.write(this.playspeed);  //Second digit of string: Speed Selected
             fileStreamWriter.write(this.colors);    //The rest of the string: Hex values of colors
+
+            fos.close();
         }
         catch (java.io.IOException e) {
             Log.e("Exception", "File Write Failed");
         }
     }
 
-    protected void editModeInMemory() {
+    protected void editModeInMemory(String Name, String Command) {
 
     }
 
