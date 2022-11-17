@@ -154,7 +154,6 @@ public class main_panels extends AppCompatActivity {
         actionBar = getSupportActionBar();
         actionBar.setTitle("Pattern Lights");
 
-
         //While the overall PanelClass is already defined, each element in the matrix must be too.
         //This defines the panel class, and will add any panels which have their information saved when the
         //app is started up

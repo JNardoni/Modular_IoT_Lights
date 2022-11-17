@@ -7,8 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.sql.Connection;
 
-//TODO Convert to SQLite DB
+//TODO Use? Delete? leftover from an attempt at .txt based memory management
 
 //Stores all information about the current saved modes for the panel of lights
 public class PanelModes {
