@@ -1,6 +1,7 @@
 package iot.nanoleaf.iot_leaf;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -44,12 +45,51 @@ public class DataBaseClass extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_MODES);
 
     }
-    //TODO Save/Load modes
-    public void loadModesFromDB() {
+    //Loads all modes to the database
+    public void loadModesFromDB(Context context) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        Cursor selectAllQuery = db.rawQuery("SELECT * FROM " + TABLE_NAME + ";", null);
+
+        if (selectAllQuery.moveToFirst() == true) {
+
+            int id = 0;
+            String name = "";
+            String pattern = "";
+            String speed = "";
+            String color = "";
+            //TODO: test - make sure the input needed is the column #, and not the column matching int/str specifically
+            //  ie: is getstring(1) col 2? or the second column of type String
+            while(selectAllQuery.moveToNext())
+                id = selectAllQuery.getInt(0);
+                name = selectAllQuery.getString(1);
+                pattern = toString().valueOf( selectAllQuery.getInt(2));
+                speed = toString().valueOf( selectAllQuery.getInt(3));
+                color = selectAllQuery.getString(4);
+                PanelModes modes = new PanelModes(id, name, pattern, speed, color, context);
+                //TODO return modes, probably array of
+        }
+
+        db.close();
     }
+    //Adds the new mode to the database
+    public void addNewMode(int id, String name, int pattern, int speed, String color) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO " + TABLE_NAME
+                + " VALUES ("
+                + id + ", "
+                + name + ", "
+                + pattern + ", "
+                + speed + ", "
+                + color + ");");
+        db.close();
+    }
+    //Deletes a mode from the database
+    public void deleteMode(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
-    public void addNewMode() {
+        db.execSQL("DELETE FROM " + TABLE_NAME
+                    + " WHERE name=" + name + ");");
 
     }
 
@@ -57,7 +97,7 @@ public class DataBaseClass extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-
+            //
         }
     }
 
