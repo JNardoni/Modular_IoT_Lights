@@ -1,3 +1,10 @@
+/*  Loads the modes, which are being stored as plan text 
+ *  from the SD card.
+ *  Eagerly stores the data in the Mode struct, so while the lights 
+ *  run can easily switch between modes
+ *  ToDO - Possibly switch to a lazy loading? Would need to be done 
+ *  if many more modes are creatable
+*/
 void loadModes() {
 
   String line;
@@ -16,7 +23,7 @@ void loadModes() {
       line = modeFile.readStringUntil('\n'); //gets the third line for the mode, the playspeed        
       PLAYABLE_MODES[modeNum].playspeed = line.toInt(); //set pattern      
 
-      line = modeFile.readStringUntil('\n'); //gets the third line for the mode, the playspeed        
+      line = modeFile.readStringUntil('\n'); //gets the fourth line for the mode, the vairous colors being used      
       PLAYABLE_MODES[modeNum].colors = line.toInt(); //set pattern     
 
       //For loop cycles through each color assigned to that individual mode
